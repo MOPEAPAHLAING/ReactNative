@@ -6,7 +6,7 @@ import { comments } from './comments';
 import { promotions } from './promotions';
 import { leaders } from './leaders';
 
-export const ConfigureStor = () => {
+export const ConfigureStore = () => {
     const store = createStore (
         combineReducers({
             dishes,

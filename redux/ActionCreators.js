@@ -101,6 +101,10 @@ export const fetchPromos = () => (dispatch) => {
     .catch((error) => dispatch(promosFailed(error.message)));
 };
 
+export const promosLoading = () => ({
+  type: ActionTypes.PROMOS_LOADING
+})
+
 export const promosFailed = (errmess) => ({
   type: ActionTypes.PROMOS_FAILED,
   payload: errmess,
@@ -136,6 +140,10 @@ export const fetchLeaders = () => (dispatch) => {
     .then((leaders) => dispatch(addLeaders(leaders)))
     .catch((error) => dispatch(leadersFailed(error.message)));
 };
+
+export const leadersLoading = () => ({
+  type: ActionTypes.LEADERS_LOADING,
+});
 
 export const leadersFailed = (errmess) => ({
   type: ActionTypes.LEADERS_FAILED,
