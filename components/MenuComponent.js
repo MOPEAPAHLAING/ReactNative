@@ -5,6 +5,7 @@ import { DISHES } from '../shared/dishes';
 import { connect } from "react-redux";
 import { baseUrl } from "../shared/baseUrl";
 import { Loading } from './LoadingComponent';
+import { withNavigation } from 'react-navigation'
 
 const mapStateToProps = (state) => {
     return {
@@ -28,7 +29,7 @@ class Menu extends Component{
                     caption={item.description}
                     featured
                     onPress={() => navigate('DishDetail', { dishId: item.id })}
-                    imageSrc={{ source: {uri : baseUrl + item.image }}}
+                    imageSrc={ {uri : baseUrl + item.image }}
                 />
             )
         }
@@ -60,4 +61,4 @@ class Menu extends Component{
     
 }
 
-export default connect(mapStateToProps)(Menu);
+export default withNavigation(connect(mapStateToProps)(Menu));
