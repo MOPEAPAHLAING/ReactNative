@@ -8,13 +8,13 @@ import {
   StyleSheet,
   Alert,
   PanResponder,
-  Button
+  Button,
 } from "react-native";
 import { Card, Icon, Rating, Input } from "react-native-elements";
 import { connect } from "react-redux";
 import { baseUrl } from "../shared/baseUrl";
 import { postFavorite, postComment } from "../redux/ActionCreators";
-import * as Animatable from 'react-native-animatable';
+import * as Animatable from "react-native-animatable";
 
 const mapStateToProps = (state) => {
   return {
@@ -33,42 +33,53 @@ const mapDispatchToProps = (dispatch) => ({
 function RenderDish(props) {
   const dish = props.dish;
 
+  handleViewRef = ref => this.view = ref;
+
   const reconizeDrag = ({ moveX, moveY, dx, dy }) => {
-    if(dx < -200)
-      return true;
-    else
-      return false;
+    if (dx < -200) return true;
+    else return false;
   };
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: (e, gestureState) => {
       return true;
     },
+    onPanResponderGrant: () => {
+      this.view.rubberBand(1000)
+        .then(endState => console.log(endState.finished ? 'finished' : 'cancelled'));
+    },
     onPanResponderEnd: (e, gestureState) => {
       if (reconizeDrag(gestureState))
         Alert.alert(
-          'Add to Favorites?',
-          'Are you sure you wish to add ' + dish.name + ' to your favorites?',
+          "Add to Favorites?",
+          "Are you sure you wish to add " + dish.name + " to your favorites?",
           [
             {
-              text: 'Cancel',
-              onPress: () => console.log('Cancel pressed'),
-              style: 'cancel'
+              text: "Cancel",
+              onPress: () => console.log("Cancel pressed"),
+              style: "cancel",
             },
             {
-              text: 'OK',
-              onPress: () => props.favorite ? console.log("Already a favorite") : props.onPress()
-            }
+              text: "OK",
+              onPress: () =>
+                props.favorite
+                  ? console.log("Already a favorite")
+                  : props.onPress(),
+            },
           ],
           { cancelable: false }
-        )
+        );
       return true;
-    }
+    },
   });
 
   if (dish != null) {
     return (
-      <Animatable.View animation="fadeInDown" duration={2000} delay={1000}
+      <Animatable.View
+        animation="fadeInDown"
+        duration={2000}
+        delay={1000}
+        ref={this.handleViewRef}
         {...panResponder.panHandlers}
       >
         <Card featuredTitle={dish.name} image={{ uri: baseUrl + dish.image }}>
@@ -129,11 +140,11 @@ function RenderComments(props) {
   return (
     <Animatable.View animation="fadeInUp" duration={2000} delay={1000}>
       <Card title="Comments">
-            <FlatList
-              data={comments}
-              renderItem={RenderCommentItem}
-              keyExtractor={(item) => item.id.toString()}
-            />
+        <FlatList
+          data={comments}
+          renderItem={RenderCommentItem}
+          keyExtractor={(item) => item.id.toString()}
+        />
       </Card>
     </Animatable.View>
   );
