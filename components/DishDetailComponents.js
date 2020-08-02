@@ -9,6 +9,7 @@ import {
   Alert,
   PanResponder,
   Button,
+  Share,
 } from "react-native";
 import { Card, Icon, Rating, Input } from "react-native-elements";
 import { connect } from "react-redux";
@@ -33,7 +34,7 @@ const mapDispatchToProps = (dispatch) => ({
 function RenderDish(props) {
   const dish = props.dish;
 
-  handleViewRef = ref => this.view = ref;
+  const handleViewRef = (ref) => (this.view = ref);
 
   const recognizeDrag = ({ moveX, moveY, dx, dy }) => {
     if (dx < -200) return true;
@@ -41,10 +42,8 @@ function RenderDish(props) {
   };
 
   const recognizeComment = ({ moveX, moveY, dx, dy }) => {
-    if(dx > 200)
-      return true;
-    else
-      return false;
+    if (dx > 200) return true;
+    else return false;
   };
 
   const panResponder = PanResponder.create({
@@ -52,8 +51,11 @@ function RenderDish(props) {
       return true;
     },
     onPanResponderGrant: () => {
-      this.view.rubberBand(1000)
-        .then(endState => console.log(endState.finished ? 'finished' : 'cancelled'));
+      this.view
+        .rubberBand(1000)
+        .then((endState) =>
+          console.log(endState.finished ? "finished" : "cancelled")
+        );
     },
     onPanResponderEnd: (e, gestureState) => {
       if (recognizeDrag(gestureState))
@@ -76,12 +78,25 @@ function RenderDish(props) {
           ],
           { cancelable: false }
         );
-      else if(recognizeComment(gestureState)){
+      else if (recognizeComment(gestureState)) {
         props.toggleModal();
       }
       return true;
     },
   });
+
+  const shareDish = (title, message, url) => {
+    Share.share(
+      {
+        title: title,
+        message: title + ": " + message + " " + url,
+        url: url,
+      },
+      {
+        dialogTitle: "Share " + title,
+      }
+    );
+  };
 
   if (dish != null) {
     return (
@@ -122,6 +137,17 @@ function RenderDish(props) {
               color="#512DA8"
               onPress={() => props.toggleModal()}
               style={{ flex: 1 }}
+            />
+            <Icon
+              raised
+              reverse
+              name={"share"}
+              type="font-awesome"
+              color="#51D2A8"
+              style={{ flex: 1 }}
+              onPress={() =>
+                shareDish(dish.name, dish.description, baseUrl + dish.image)
+              }
             />
           </View>
         </Card>
